@@ -10,7 +10,7 @@ public class MobilniBroj extends TelefonskiBroj{
 
     @Override
     public int hashCode(){
-        return mobilnaMreza;
+        return 0;
     }
 
     @Override
