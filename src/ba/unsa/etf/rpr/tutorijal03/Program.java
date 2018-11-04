@@ -1,29 +1,106 @@
 package ba.unsa.etf.rpr.tutorijal03;
 
-public class Program {
+import java.util.Scanner;
+import java.util.Set;
 
-    public static void main(String[] args) {
-	    System.out.println("Cilj vježbe je napraviti aplikaciju \"ETF Telefonski imenik\". Aplikacija se treba sastojati od sljedećih klasa:\n" +
-				"Apstraktna klasa TelefonskiBroj sadrži javnu apstraktnu metodu String ispisi() koja vraća broj u tekstualnoj formi pogodnoj za ispis, te apstraktnu metodu int hashCode() objašnjenu na predavanjima. Iz ove klase izvedene su sljedeće klase:\n" +
-				"FiksniBroj sadrži konstruktor FiksniBroj(Grad grad, String broj). Parametar broj je dio telefonskog broja bez pozivnog broja npr. \"123-456\", a grad je promjenljiva pobrojanog tipa koji označava pozivni broj koji treba koristiti npr.:\n" +
-				"\tenum Grad { SARAJEVO, TUZLA, ZENICA…}\n" +
-				"Spisak pozivnih brojeva se može naći ovdje. Umjesto imena kantona koristite ime glavnog grada kantona (kao u primjeru iznad), a umjesto Brčko distrikta stavite BRCKO. Metoda ispisi() treba vratiti broj oblika \"033/123-456\".\n" +
-				"MobilniBroj ima konstruktor MobilniBroj(int mobilnaMreza, String broj) pri čemu oznaka mobilne mreže predstavlja drugu i treću cifru pozivnog broja tj. 60-67 (detaljnije informacije možete naći na istoj stranici). Metoda ispisi vraća broj istog oblika \"061/987-654\".\n" +
-				"MedunarodniBroj ima konstruktor MedunarodniBroj(String drzava, String broj) pri čemu string drzava sadrži kompletan pozivni broj za državu npr. \"+387\".\n" +
-				"Klasa Imenik omogućuje da se pretražuju brojevi koristeći klasu HashMap. Ova klasa treba sadržavati sljedeće javne metode:\n" +
-				"void dodaj(String ime, TelefonskiBroj broj)\n" +
-				"String dajBroj(String ime) - vraća telefonski broj osobe pod imenom ime u formi stringa pozivajući metodu ispisi() klase TelefonskiBroj,\n" +
-				"String naSlovo(char s) - vraća sve brojeve u telefonskom imeniku za osobe čije ime počinje na slovo s u formatu:\n" +
-				"1. Ime Prezime - broj\n" +
-				"2. Ime Prezime - broj\n" +
-				"…\n" +
-				"Set<String> izGrada(Grad g) - vraća skup Stringova koji sadrži imena i prezimena svih osoba koje žive u gradu g (istog pobrojanog tipa koji je dat u klasi FiksniBroj), što se može saznati ako osoba ima fiksni broj telefona u tom gradu. Pri tome skup treba biti sortiran abecedno.\n" +
-				"Set<TelefonskiBroj> izGradaBrojevi(Grad g) - vraća brojeve za osobe iz grada g. Ovaj skup treba biti sortiran po stringu koji se dobije metodom ispisi().\n" +
-				"Klasa Program treba sadržavati main metodu koja korisniku omogućuje da unosom naredbi pomoću tastature pozove sve metode klasa navedenih iznad.\n" +
-				"\n" +
-				"Dodajte nedostajuće testove po potrebi. Prilikom rješavanja zadatka obavezno se pridržavati pravila rada koja su navedena na predavanjima, između ostalog:\n" +
-				"ispravno imenovanje paketa, klasa, metoda i promjenljivih,\n" +
-				"primjenu komentara,\n" +
-				"atomic commits.\n");
-    }
+public class Program {
+	public static void main(String[] args) {
+		Imenik imeniik = new Imenik();
+		int meni;
+		do {
+			System.out.println("Izaberite opciju: ");
+			System.out.println("1 - Dodaj kontakt");
+			System.out.println("2 - Nadji broj osobe");
+			System.out.println("3 - Pregled svih brojeva za osobe sa datim pocetnim slovom");
+			System.out.println("4 - Pregled svih osoba iz grada");
+			System.out.println("5 - Pregled svih brojeva iz grada");
+			System.out.println("6 - Izlaz");
+			Scanner ulaz = new Scanner(System.in);
+			meni = ulaz.nextInt();
+			switch (meni) {
+				case 1:
+					System.out.print("Unesite ime: ");
+					ulaz.nextLine();
+					String ime = ulaz.nextLine();
+					System.out.println("1 -  Fiksni broj");
+					System.out.println("2 -  Mobilni broj");
+					System.out.println("3 -  Medjunarodni broj");
+					int meni2 = ulaz.nextInt();
+					ulaz.nextLine();
+					String broj;
+					switch (meni2) {
+						case 1:
+							System.out.print("Unesite grad (TRAVNIK(30), ORASJE(31), ZENICA(32), SARAJEVO(33), LIVNO(34), TUZLA(35), MOSTAR(36), BIHAC(037), GORAZDE(38), SIROKIBRIJEG(39), BRCKO(49)): ");
+							String pozBroj = ulaz.nextLine();
+							System.out.print("Unesite broj: ");
+							broj = ulaz.nextLine();
+							imeniik.dodaj(ime, new FiksniBroj(FiksniBroj.Grad.valueOf(pozBroj), broj));
+							break;
+						case 2:
+							System.out.print("Unesite pozivni broj: ");
+							int pozBrojMob = ulaz.nextInt();
+							ulaz.nextLine();
+							System.out.print("Unesite broj: ");
+							broj = ulaz.nextLine();
+							imeniik.dodaj(ime, new MobilniBroj(pozBrojMob, broj));
+							break;
+						case 3:
+							System.out.print("Unesite pozivni broj: ");
+							String pozBrojDrzava = ulaz.nextLine();
+							System.out.print("Unesite broj: ");
+							broj = ulaz.nextLine();
+							imeniik.dodaj(ime, new MedunarodniBroj(pozBrojDrzava, broj));
+							break;
+					}
+					break;
+				case 2:
+					System.out.print("Unesite ime osobe: ");
+					ulaz.nextLine();
+					String imeOsobe = ulaz.nextLine();
+					try {
+						System.out.println("Broj: " + imeniik.dajBroj(imeOsobe));
+					} catch (Exception greska) {
+						System.out.println(greska.getMessage());
+					}
+					break;
+				case 3:
+					System.out.print("Unesite pocetno slovo: ");
+					ulaz.nextLine();
+					char pocSlovo = ulaz.nextLine().charAt(0);
+					try {
+						System.out.println(imeniik.naSlovo(pocSlovo));
+					} catch (Exception greska) {
+						System.out.println(greska.getMessage());
+					}
+					break;
+				case 4:
+					System.out.print("Unesite grad (TRAVNIK(30), ORASJE(31), ZENICA(32), SARAJEVO(33), LIVNO(34), TUZLA(35), MOSTAR(36), BIHAC(037), GORAZDE(38), SIROKIBRIJEG(39), BRCKO(49)): ");
+					ulaz.nextLine();
+					String grad = ulaz.nextLine();
+					Set<String> rezultat = imeniik.izGrada(FiksniBroj.Grad.valueOf(grad));
+					int i = 1;
+					for(String osoba: rezultat) {
+						System.out.println(i + ". " + osoba);
+						i++;
+					}
+					if (i==1)
+						System.out.println("Nema registrovanih osoba u datom gradu");
+					break;
+				case 5:
+					System.out.print("Unesite grad (TRAVNIK(30), ORASJE(31), ZENICA(32), SARAJEVO(33), LIVNO(34), TUZLA(35), MOSTAR(36), BIHAC(037), GORAZDE(38), SIROKIBRIJEG(39), BRCKO(49)): ");
+					ulaz.nextLine();
+					String grad2 = ulaz.nextLine();
+					Set<TelefonskiBroj> rezultat2 = imeniik.izGradaBrojevi(FiksniBroj.Grad.valueOf(grad2));
+					int j = 1;
+					for(TelefonskiBroj osoba2: rezultat2) {
+						System.out.println(j + ". " + osoba2.ispisi());
+						j++;
+					}
+					if (j==1)
+						System.out.println("Nema registrovanih osoba u datom gradu");
+					break;
+			}
+		} while (meni != 6);
+		System.out.println("Kraj");
+	}
 }
