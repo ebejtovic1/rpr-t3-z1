@@ -17,15 +17,15 @@ public class Imenik{
         return tel.ispisi();
 
     }
-
     public String dajIme(TelefonskiBroj broj){
-        Set set = lista.entrySet();
-        Iterator iterator = set.iterator();
-        while(iterator.hasNext()) {
-            Map.Entry par = (Map.Entry)iterator.next();
-            if(par.getValue()==broj)return (String) par.getKey();
+        if(lista.containsValue(broj)){
+            for (String s : lista.keySet()) {
+                if (lista.get(s).equals(broj)) {
+                    return s;
+                }
+            }
         }
-        return null;
+        return "";
     }
 
     public String naSlovo(char s){
@@ -42,28 +42,33 @@ public class Imenik{
         return lis;
     }
 
-    public Set<String> izGrada(FiksniBroj.Grad g){
-        int broj=g.hashCode();
-        String elma="Elma";
-        Set<String> skup=new HashSet <>();
-        skup.add(elma);
-        String s="";
-        s+=broj;
-
-        for (Map.Entry<String, TelefonskiBroj> entry : lista.entrySet()) {
-            String pomocni = (entry.getValue()).ispisi();
-            String pomocni2="";
-            String pomocni3="";
-            pomocni2+=(pomocni.charAt(1));
-            pomocni3+=(pomocni.charAt(2));
-            pomocni2+=pomocni3;
-            if (s.equals(pomocni3)) skup.add((entry.getKey()));
+    public Set<String> izGrada(FiksniBroj.Grad g) {
+        Set<String> povartniSet = new TreeSet<>();
+        for(Map.Entry<String, TelefonskiBroj> entry : lista.entrySet()){
+            TelefonskiBroj temp = entry.getValue();
+            String ime = entry.getKey();
+            if( temp instanceof FiksniBroj){
+                FiksniBroj fBroj = (FiksniBroj) temp;
+                if( fBroj.getGrad() == g){
+                    povartniSet.add(ime);
+                }
+            }
         }
-        return skup;
-        }
+        return povartniSet;
+    }
 
-    public Set<TelefonskiBroj> izGradaBrojevi(FiksniBroj.Grad g){
-        return null;
+    public Set<TelefonskiBroj> izGradaBrojevi(FiksniBroj.Grad g) {
+        Set<TelefonskiBroj> povartniSet = new TreeSet<>();
+        for(Map.Entry<String, TelefonskiBroj> entry : lista.entrySet()){
+            TelefonskiBroj temp = entry.getValue();
+            if( temp instanceof FiksniBroj){
+                FiksniBroj fBroj = (FiksniBroj) temp;
+                if( fBroj.getGrad() == g){
+                    povartniSet.add(temp);
+                }
+            }
+        }
+        return povartniSet;
     }
 
 
